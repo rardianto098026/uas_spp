@@ -3,8 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Aplikasi SPP SMK Negeri 2 Kuningan">
-    <meta name="author" content="Oya Suryana, M.Kom.">
     <title>Aplikasi SPP</title>
     <!-- Bootstrap core CSS -->
 <link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -62,7 +60,7 @@ code {
     
 <header>
   <!-- Fixed navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-success">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color:#1D7CBF!important">
     <a class="navbar-brand" href="#">AppSPP</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>

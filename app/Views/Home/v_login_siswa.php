@@ -40,7 +40,7 @@
   <label for="inputPassword" class="sr-only">Password</label>
   <input type="password" name="txtPassword" id="inputPassword" class="form-control" placeholder="Password" required>
   <button class="btn btn-lg btn-primary btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
-  <p class="mt-5 mb-3 text-muted">&copy; RPL SMKN 2 Kuningan - 2021</p>
+  <p class="mt-5 mb-3 text-muted">UAS Pemrograman WEB</p>
 </form>
 
 

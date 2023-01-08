@@ -4,6 +4,13 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 
+//memanggil package excel
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+//memanggil package pdf
+use Dompdf\Dompdf;
+
 class Siswa extends BaseController
 {
 	public function index()
@@ -169,5 +176,86 @@ class Siswa extends BaseController
 		session()->destroy();
 		return redirect()->to('/');
 	}
+
+	
+	function export_xls()
+    {
+		$this->siswa->join('kelas','kelas.id_kelas=siswa.id_kelas');
+		$this->siswa->join('spp','spp.id_spp=siswa.id_spp');
+
+		// 2. jalankan query builder
+		$data['listSiswa']=$this->siswa->findAll();
+
+        //select data from table petugas
+        $list = $data['listSiswa'];
+
+        //filename
+        $fileName = 'ListSiswa.xlsx';
+
+        //start package excel
+        $spreadsheet = new Spreadsheet();
+
+        //header
+        $sheet = $spreadsheet->getActiveSheet();
+        //(A1 : lokasi line & column excel, No : display data)
+        $sheet->setCellValue('A1', 'No')->getColumnDimension('A')->setAutoSize(true);
+        $sheet->setCellValue('B1', 'NISN')->getColumnDimension('B')->setAutoSize(true);
+        $sheet->setCellValue('C1', 'NIS')->getColumnDimension('C')->setAutoSize(true);
+        $sheet->setCellValue('D1', 'Nama Lengkap')->getColumnDimension('D')->setAutoSize(true);
+		$sheet->setCellValue('D1', 'Kelas')->getColumnDimension('E')->setAutoSize(true);
+		$sheet->setCellValue('D1', 'Alamat')->getColumnDimension('F')->setAutoSize(true);
+		$sheet->setCellValue('D1', 'No. Telp')->getColumnDimension('G')->setAutoSize(true);
+		$sheet->setCellValue('D1', 'Tarif SPP')->getColumnDimension('H')->setAutoSize(true);
+
+        //body
+        $line = 2;
+        foreach ($list as $row) {
+            $sheet->setCellValue('A'.$line, $line-1);
+            $sheet->setCellValue('B'.$line, $row['nisn']);
+            $sheet->setCellValue('C'.$line, $row['nis']);
+            $sheet->setCellValue('D'.$line, $row['nama']);
+			$sheet->setCellValue('E'.$line, $row['nama_kelas']);
+			$sheet->setCellValue('F'.$line, $row['alamat']);
+			$sheet->setCellValue('G'.$line, $row['no_telp']);
+			$sheet->setCellValue('H'.$line, $row['nominal']);
+            $line++;
+        }
+
+        header("Content-Type: application/vnd.ms-excel");
+        header('Content-Disposition: attachment; filename="' . urlencode($fileName) . '"');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
+    function export_pdf()
+    {
+		$this->siswa->join('kelas','kelas.id_kelas=siswa.id_kelas');
+		$this->siswa->join('spp','spp.id_spp=siswa.id_spp');
+		$data['listSiswa']=$this->siswa->findAll();
+
+        //select data from table petugas
+        $list = $data['listSiswa'];
+
+        //filename
+        $fileName = 'siswa_export';
+
+        // instantiate and use the dompdf class
+        $dompdf = new Dompdf();
+
+        // load HTML content
+        $output = [
+            'list' => $list,
+        ];
+        $dompdf->loadHtml(view('Siswa/siswa_export_pdf', $output));
+
+        // (optional) setup the paper size and orientation
+        $dompdf->setPaper('A4', 'potrait');
+
+        // render html as PDF
+        $dompdf->render();
+
+        // output the generated pdf
+        $dompdf->stream($fileName);
+    }
 
 }

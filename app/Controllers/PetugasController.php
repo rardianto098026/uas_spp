@@ -5,6 +5,13 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\Petugas;
 
+//memanggil package excel
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+//memanggil package pdf
+use Dompdf\Dompdf;
+
 class PetugasController extends BaseController
 {	
 	// form login
@@ -43,7 +50,12 @@ class PetugasController extends BaseController
 			];
 			// membuat session
 			session()->set($session_data);
-			return redirect()->to('/petugas/dashboard');
+			if(session()->get('level')=='admin'){
+				return redirect()->to('/petugas/charts');
+				exit;		
+			}else{
+				return redirect()->to('/petugas/dashboard');
+			}
 
 		}else{
 			return redirect()->to('/petugas');
@@ -66,7 +78,7 @@ class PetugasController extends BaseController
 
 		// cek apakah yang login bukan admin ?
 		if(session()->get('level')!='admin'){
-			return redirect()->to('/petugas/dashboard');
+			return redirect()->to('/petugas/charts');
 			exit;		
 		}
 		
@@ -84,7 +96,7 @@ class PetugasController extends BaseController
 
 		// cek apakah yang login bukan admin ?
 		if(session()->get('level')!='admin'){
-			return redirect()->to('/petugas/dashboard');
+			return redirect()->to('/petugas/charts');
 			exit;		
 		}
 
@@ -99,7 +111,7 @@ class PetugasController extends BaseController
 
 		// cek apakah yang login bukan admin ?
 		if(session()->get('level')!='admin'){
-			return redirect()->to('/petugas/dashboard');
+			return redirect()->to('/petugas/charts');
 			exit;		
 		}
 
@@ -123,7 +135,7 @@ class PetugasController extends BaseController
 
 		// cek apakah yang login bukan admin ?
 		if(session()->get('level')!='admin'){
-			return redirect()->to('/petugas/dashboard');
+			return redirect()->to('/petugas/charts');
 			exit;		
 		}
 		
@@ -147,7 +159,7 @@ class PetugasController extends BaseController
 
 		// cek apakah yang login bukan admin ?
 		if(session()->get('level')!='admin'){
-			return redirect()->to('/petugas/dashboard');
+			return redirect()->to('/petugas/charts');
 			exit;		
 		}
 
@@ -165,7 +177,7 @@ class PetugasController extends BaseController
 
 		// cek apakah yang login bukan admin ?
 		if(session()->get('level')!='admin'){
-			return redirect()->to('/petugas/dashboard');
+			return redirect()->to('/petugas/charts');
 			exit;		
 		}
 
@@ -189,4 +201,72 @@ class PetugasController extends BaseController
 		$Datapetugas->update($this->request->getPost('txtInputUser'),$data);
 		return redirect()->to('/petugas/tampil');
 	}
+
+	function export_xls()
+    {
+		$Datapetugas = New Petugas;
+		$data['ListPetugas'] = $Datapetugas->findAll();		
+
+        //select data from table petugas
+        $list = $data['ListPetugas'];
+
+        //filename
+        $fileName = 'ListPetugas.xlsx';
+
+        //start package excel
+        $spreadsheet = new Spreadsheet();
+
+        //header
+        $sheet = $spreadsheet->getActiveSheet();
+        //(A1 : lokasi line & column excel, No : display data)
+        $sheet->setCellValue('A1', 'No')->getColumnDimension('A')->setAutoSize(true);
+        $sheet->setCellValue('B1', 'Nama Petugas')->getColumnDimension('B')->setAutoSize(true);
+        $sheet->setCellValue('C1', 'Username')->getColumnDimension('C')->setAutoSize(true);
+        $sheet->setCellValue('D1', 'Level User')->getColumnDimension('D')->setAutoSize(true);
+
+        //body
+        $line = 2;
+        foreach ($list as $row) {
+            $sheet->setCellValue('A'.$line, $line-1);
+            $sheet->setCellValue('B'.$line, $row['nama_petugas']);
+            $sheet->setCellValue('C'.$line, $row['username']);
+            $sheet->setCellValue('D'.$line, $row['level']);
+            $line++;
+        }
+
+        header("Content-Type: application/vnd.ms-excel");
+        header('Content-Disposition: attachment; filename="' . urlencode($fileName) . '"');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
+    function export_pdf()
+    {
+		$Datapetugas = New Petugas;
+		$data['ListPetugas'] = $Datapetugas->findAll();		
+
+        //select data from table petugas
+        $list = $data['ListPetugas'];
+
+        //filename
+        $fileName = 'petugas_export';
+
+        // instantiate and use the dompdf class
+        $dompdf = new Dompdf();
+
+        // load HTML content
+        $output = [
+            'list' => $list,
+        ];
+        $dompdf->loadHtml(view('Petugas/petugas_export_pdf', $output));
+
+        // (optional) setup the paper size and orientation
+        $dompdf->setPaper('A4', 'potrait');
+
+        // render html as PDF
+        $dompdf->render();
+
+        // output the generated pdf
+        $dompdf->stream($fileName);
+    }
 }

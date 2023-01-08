@@ -32,11 +32,7 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
-
-
-
-
+$routes->get('/', 'PetugasController::index');
 
 $routes->get('/petugas', 'PetugasController::index');
 $routes->get('/petugas/tampil', 'PetugasController::tampilPetugas');
@@ -45,11 +41,15 @@ $routes->post('/petugas/simpan', 'PetugasController::simpanPetugas');
 $routes->get('/petugas/edit/(:num)', 'PetugasController::editPetugas/$1');
 $routes->post('/petugas/update', 'PetugasController::updatePetugas');
 $routes->get('/petugas/hapus/(:num)', 'PetugasController::hapusPetugas/$1');
+//petugas export
+$routes->get('/petugas_export_xls', 'PetugasController::export_xls');
+$routes->get('/petugas_export_pdf', 'PetugasController::export_pdf');
 
 $routes->post('/login', 'PetugasController::login');
 $routes->get('/petugas/logout', 'PetugasController::logout');
 
 $routes->get('/petugas/dashboard', 'Dashboardpetugas::index',['filter'=>'otentifikasi']);
+$routes->get('/petugas/charts', 'Dashboardpetugas::initChart');
 
 $routes->get('/spp', 'Spp::index',['filter'=>'otentifikasi']);
 $routes->get('/spp/tambah', 'Spp::tambahSpp',['filter'=>'otentifikasi']);
@@ -71,6 +71,9 @@ $routes->post('/siswa/simpan', 'Siswa::simpanSiswa',['filter'=>'otentifikasi']);
 $routes->get('/siswa/hapus/(:num)', 'Siswa::hapusSiswa/$1',['filter'=>'otentifikasi']);
 $routes->get('/siswa/edit/(:num)', 'Siswa::editSiswa/$1',['filter'=>'otentifikasi']);
 $routes->post('/siswa/update', 'Siswa::updateSiswa',['filter'=>'otentifikasi']);
+//siswa export
+$routes->get('/siswa_export_xls', 'Siswa::export_xls');
+$routes->get('/siswa_export_pdf', 'Siswa::export_pdf');
 
 $routes->post('/siswa/login','Siswa::loginSiswa');
 $routes->get('/siswa/logout', 'Siswa::logout');
@@ -89,7 +92,6 @@ $routes->get('/laporan/penerimaan', 'Laporan::penerimaanSpp',['filter'=>'otentif
 $routes->post('/laporan/data-penerimaan', 'Laporan::penerimaanTampil',['filter'=>'otentifikasi']);
 $routes->get('/laporan/tunggakan', 'Laporan::tunggakanSPP',['filter'=>'otentifikasi']);
 $routes->post('/laporan/data-tunggakan', 'Laporan::dataTunggakan',['filter'=>'otentifikasi']);
-
 
 /*
  * --------------------------------------------------------------------

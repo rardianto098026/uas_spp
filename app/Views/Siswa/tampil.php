@@ -7,6 +7,8 @@
 
 <a href="/siswa/tambah" class="btn btn-primary btn-sm mb-2">Tambah Siswa</a>
 
+<a href="<?= site_url('siswa_export_xls') ?>" class="btn btn-success btn-sm" style="float:right;margin-right:10px"><i class="fas fa-download"></i> Export Excel</a>
+<a href="<?= site_url('siswa_export_pdf') ?>" class="btn btn-danger btn-sm" style="float:right;margin-right:10px"><i class="fas fa-download"></i> Export PDF</a>
 
 <table class="table table-sm">
     <thead class="bg-light">
@@ -23,29 +25,29 @@
         </tr>
     </thead>
     <tbody>
-    <?php
-    $htmlData=null;
-    $no=null;
-    foreach($listSiswa as $row){
-        $no++;
-        $htmlData ='<tr>'; 
-        $htmlData .='<td>'.$no.'</td>'; 
-        $htmlData .='<td>'.$row['nisn'].'</td>'; 
-        $htmlData .='<td>'.$row['nis'].'</td>'; 
-        $htmlData .='<td>'.$row['nama'].'</td>'; 
-        $htmlData .='<td>'.$row['nama_kelas'].'</td>'; 
-        $htmlData .='<td>'.$row['alamat'].'</td>'; 
-        $htmlData .='<td>'.$row['no_telp'].'</td>'; 
-        $htmlData .='<td> Rp '.$row['nominal'].'</td>'; 
-        $htmlData .='<td>';
-        $htmlData .='<a href="/siswa/edit/'.$row['nisn'].'" class="mr-2"><i class="fas fa-edit"></i></a>';
-        $htmlData .='<a href="/siswa/hapus/'.$row['nisn'].'" data-confirm="Anda yakin akan menghapus data"><i class="fas fa-trash-alt"></i></a>';
-        $htmlData .='</td>';
-        $htmlData .='</tr>'; 
-        echo $htmlData;
-    }
-    
-    ?>
+        <?php
+        $htmlData=null;
+        $no=null;
+        foreach($listSiswa as $row){
+            $no++;
+            $htmlData ='<tr>'; 
+            $htmlData .='<td>'.$no.'</td>'; 
+            $htmlData .='<td>'.$row['nisn'].'</td>'; 
+            $htmlData .='<td>'.$row['nis'].'</td>'; 
+            $htmlData .='<td>'.$row['nama'].'</td>'; 
+            $htmlData .='<td>'.$row['nama_kelas'].'</td>'; 
+            $htmlData .='<td>'.$row['alamat'].'</td>'; 
+            $htmlData .='<td>'.$row['no_telp'].'</td>'; 
+            $htmlData .='<td> Rp '.$row['nominal'].'</td>'; 
+            $htmlData .='<td>';
+            $htmlData .='<a href="/siswa/edit/'.$row['nisn'].'" class="mr-2"><i class="fas fa-edit"></i></a>';
+            $htmlData .='<a href="/siswa/hapus/'.$row['nisn'].'" data-confirm="Anda yakin akan menghapus data"><i class="fas fa-trash-alt"></i></a>';
+            $htmlData .='</td>';
+            $htmlData .='</tr>'; 
+            echo $htmlData;
+        }
+        
+        ?>
     </tbody>
 </table>
 
